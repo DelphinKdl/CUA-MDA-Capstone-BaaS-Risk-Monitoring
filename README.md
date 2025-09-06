@@ -28,6 +28,3 @@ Python, Scikit-learn, Pandas, Streamlit, GitHub, AWS
 git https://github.com/DelphinKdl/CUA-MDA-Capstone-BaaS-Risk-Monitoring.git
 pip install -r requirements.txt
 
-
-> *Prepared by: Delphin Kdl & team*
-> *Catholic University of America, Data Analytics Capstone*
