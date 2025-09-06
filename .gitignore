@@ -9,7 +9,7 @@ __pycache__/
 kaggle.json
 # C extensions
 *.so
-
+d.txt
 # Distribution / packaging
 .Python
 build/
