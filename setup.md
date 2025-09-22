@@ -6,14 +6,20 @@ git clone https://github.com/DelphinKdl/CUA-MDA-Capstone-BaaS-Risk-Monitoring.gi
 cd CUA-MDA-Capstone-BaaS-Risk-Monitoring
 
 # (2) Create virtual environment
-python -m venv venv.   # Enter
-.\venv\Scripts\activate on Windows # source venv/bin/activate  on Mac
+python -m venv .venv  # Enter
+.\.venv\Scripts\activate on Windows # source venv/bin/activate  on Mac
 
 
 ## if you get the error message run
 Set-EsecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 # (3) Install dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt -c constraints-aws.txt
+
+
+
+
+
+
 
 
