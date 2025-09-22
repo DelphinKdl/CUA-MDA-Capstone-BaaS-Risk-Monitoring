@@ -26,5 +26,7 @@ Python, Scikit-learn, Pandas, Streamlit, GitHub, AWS
 ## Setup
 ```bash
 git https://github.com/DelphinKdl/CUA-MDA-Capstone-BaaS-Risk-Monitoring.git
+python -m venv .venv
+source .venv/bin/activate # on mac on window is .\.venv\Scripts\activate
 pip install -r requirements.txt
 
