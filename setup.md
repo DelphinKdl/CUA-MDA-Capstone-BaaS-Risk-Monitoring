@@ -11,7 +11,7 @@ python -m venv .venv  # Enter
 
 
 ## if you get the error message run
-Set-EsecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Set-EXecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 # (3) Install dependencies
 pip install -r requirements.txt -c constraints-aws.txt
