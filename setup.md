@@ -7,7 +7,7 @@ cd CUA-MDA-Capstone-BaaS-Risk-Monitoring
 
 # (2) Create virtual environment
 python -m venv .venv  # Enter
-.\.venv\Scripts\activate on Windows # source venv/bin/activate  on Mac
+.\.venv\Scripts\activate on Windows # source .venv/bin/activate  on Mac
 
 
 ## if you get the error message run
