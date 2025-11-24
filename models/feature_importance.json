@@ -1,0 +1,82 @@
+[
+  {
+    "Feature": "To Bank",
+    "Importance": 26530
+  },
+  {
+    "Feature": "From Bank",
+    "Importance": 22524
+  },
+  {
+    "Feature": "hour",
+    "Importance": 19124
+  },
+  {
+    "Feature": "Amount Received",
+    "Importance": 15547
+  },
+  {
+    "Feature": "Amount Paid",
+    "Importance": 14501
+  },
+  {
+    "Feature": "amount_zscore",
+    "Importance": 13618
+  },
+  {
+    "Feature": "day_of_week",
+    "Importance": 9547
+  },
+  {
+    "Feature": "risk_score_v2",
+    "Importance": 3995
+  },
+  {
+    "Feature": "is_usd",
+    "Importance": 2493
+  },
+  {
+    "Feature": "is_euro",
+    "Importance": 2346
+  },
+  {
+    "Feature": "is_bank_800",
+    "Importance": 1092
+  },
+  {
+    "Feature": "is_uk_pound",
+    "Importance": 746
+  },
+  {
+    "Feature": "is_ach",
+    "Importance": 744
+  },
+  {
+    "Feature": "is_night",
+    "Importance": 740
+  },
+  {
+    "Feature": "is_bank_1004",
+    "Importance": 628
+  },
+  {
+    "Feature": "ach_weekend",
+    "Importance": 597
+  },
+  {
+    "Feature": "in_structuring_range",
+    "Importance": 403
+  },
+  {
+    "Feature": "is_weekend",
+    "Importance": 344
+  },
+  {
+    "Feature": "is_just_below_threshold",
+    "Importance": 341
+  },
+  {
+    "Feature": "uk_pound_structuring",
+    "Importance": 39
+  }
+]

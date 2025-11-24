@@ -1,0 +1,22 @@
+[
+  "From Bank",
+  "To Bank",
+  "Amount Received",
+  "Amount Paid",
+  "amount_zscore",
+  "is_uk_pound",
+  "is_euro",
+  "is_usd",
+  "hour",
+  "day_of_week",
+  "is_weekend",
+  "is_night",
+  "is_ach",
+  "is_just_below_threshold",
+  "in_structuring_range",
+  "is_bank_1004",
+  "is_bank_800",
+  "uk_pound_structuring",
+  "ach_weekend",
+  "risk_score_v2"
+]
