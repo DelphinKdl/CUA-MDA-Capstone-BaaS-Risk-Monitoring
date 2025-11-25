@@ -108,21 +108,38 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
     is_euro = 1 if payment_currency == "Euro" else 0
     is_uk_pound = 1 if payment_currency == "UK Pound" else 0
     
-    # Bank-specific features
-    is_bank_800 = 1 if receiver_bank == 800 or sender_bank == 800 else 0
-    is_bank_1004 = 1 if receiver_bank == 1004 or sender_bank == 1004 else 0
+    # Bank-specific features (based on account prefix)
+    sender_account_str = str(sender_account)
+    receiver_account_str = str(receiver_account)
     
-    # Structuring detection (amounts between $9K-$10K)
-    in_structuring_range = 1 if 9000 <= amount <= 10000 else 0
-    is_just_below_threshold = 1 if 9500 <= amount < 10000 else 0
+    # Check if account/bank starts with 800 or 1004
+    is_bank_800 = 1 if (sender_account_str.startswith('800') or 
+                        receiver_account_str.startswith('800') or
+                        str(sender_bank).startswith('800') or 
+                        str(receiver_bank).startswith('800')) else 0
+    
+    is_bank_1004 = 1 if (sender_account_str.startswith('1004') or 
+                         receiver_account_str.startswith('1004') or
+                         str(sender_bank).startswith('1004') or 
+                         str(receiver_bank).startswith('1004')) else 0
+    
+    # Structuring detection - CORRECTED
+    # is_just_below_threshold: 9K-10K for major currencies
+    is_just_below_threshold = 0
+    if payment_currency in ['US Dollar', 'Euro', 'UK Pound', 'Canadian Dollar', 'Australian Dollar']:
+        if 9000 <= amount < 10000:
+            is_just_below_threshold = 1
+    
+    # in_structuring_range: 3K-9K (from training)
+    in_structuring_range = 1 if 3000 <= amount <= 9000 else 0
     
     # Combined risk patterns
     ach_weekend = is_ach * is_weekend
-    uk_pound_structuring = is_uk_pound * in_structuring_range
+    uk_pound_structuring = is_uk_pound * is_just_below_threshold
     
-    # Statistical features (simplified calculations)
-    mean_amount = 5000  # Average transaction amount
-    std_amount = 3000   # Standard deviation
+    # Statistical features - CORRECTED with actual dataset statistics
+    mean_amount = 5392240  # Actual mean from dataset
+    std_amount = 1298679000  # Actual std from dataset
     amount_zscore = (amount - mean_amount) / std_amount
     
     # Risk score v2: composite risk indicator
@@ -158,7 +175,7 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
         'risk_score_v2': risk_score_v2
     }
     
-    # Create features dataframe
+    #  features 
     input_data = pd.DataFrame([input_dict], columns=feature_names)
     
     # Scale features
@@ -169,7 +186,7 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
     threshold = config['optimal_threshold']
     prediction = 1 if risk_probability >= threshold else 0
     
-    # Save to prediction history (silently)
+    #
     prediction_record = {
         'Timestamp': f"{transaction_date} {transaction_time}",
         'Sender Bank': sender_bank,
@@ -248,7 +265,7 @@ Risk Score: **{risk_probability*100:.2f}%** (Below 10% threshold)
             if is_weekend:
                 risk_factors.append("Weekend transaction")
             if in_structuring_range:
-                risk_factors.append("Structuring pattern ($9K-$10K)")
+                risk_factors.append("Structuring pattern")
             if is_bank_1004:
                 risk_factors.append("High-risk institution")
             if is_uk_pound and in_structuring_range:
