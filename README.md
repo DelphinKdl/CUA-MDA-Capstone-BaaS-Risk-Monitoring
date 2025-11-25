@@ -5,7 +5,7 @@
 A machine learning-powered Anti-Money Laundering (AML) detection system with an interactive Streamlit dashboard. Built using IBM's Synthetic AML Dataset (31.9M transactions), this system achieves **73% precision** and ***ROC-AUC 97.8%**, making it production-ready for banking compliance teams.
 
 ##  Live Demo
-Visit the dashboard: [Add your deployment URL here]
+ **[Visit Live Dashboard](https://cua-mda-aml-prediction.streamlit.app/)**
 
 ##  Key Features
 - **Real-time Transaction Scoring**: Instant risk assessment for individual transactions

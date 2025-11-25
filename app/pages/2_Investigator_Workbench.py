@@ -228,7 +228,7 @@ Risk Score: **{risk_probability*100:.2f}%** (Above 10% threshold)
 """)
         else:
             st.success(f"""
-** LOW RISK TRANSACTION**
+**LOW RISK TRANSACTION**
 
 Risk Score: **{risk_probability*100:.2f}%** (Below 10% threshold)
 
