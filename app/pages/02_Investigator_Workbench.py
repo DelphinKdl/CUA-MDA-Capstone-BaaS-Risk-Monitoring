@@ -11,7 +11,7 @@ import joblib
 import json
 
 st.set_page_config(
-    page_title="Case Management",
+    page_title="AML Prediction",
     page_icon="",
     layout="wide"
 )
@@ -20,7 +20,6 @@ st.set_page_config(
 @st.cache_resource
 def load_model():
     import os
-    # Try multiple path options
     for base in ['../../models/', '../models/', './models/']:
         model_path = os.path.join(base, 'calibrated_lightgbm_model.pkl')
         if os.path.exists(model_path):
@@ -35,27 +34,13 @@ def load_model():
 
 model, scaler, feature_names, config = load_model()
 
-# Initialize session state and load from Excel if exists
 if 'prediction_history' not in st.session_state:
-    import os
-    excel_file = 'prediction_history.xlsx'
-    if os.path.exists(excel_file):
-        try:
-            existing_df = pd.read_excel(excel_file)
-            st.session_state.prediction_history = existing_df.to_dict('records')
-        except:
-            st.session_state.prediction_history = []
-    else:
-        st.session_state.prediction_history = []
+    st.session_state.prediction_history = []
 
-st.title("Transaction monitoring")
-st.markdown("**Real-time transaction risk scoring and case investigation for compliance analysts**")
+st.title(" Transaction Monitoring")
+st.markdown("**Real-time transaction risk scoring and case investigation for compliance team**")
 
 st.markdown("---")
-
-# Input Form - User-Friendly Transaction Entry
-st.markdown("### Enter Transaction Details for Prediction")
-st.info("Enter transaction information as it appears in your system. All risk features will be calculated automatically.")
 
 col1, col2, col3 = st.columns(3)
 
@@ -67,51 +52,47 @@ with col1:
     
 with col2:
     st.markdown("**Transaction Amount**")
-    amount = st.number_input("Amount ($)", min_value=0.0, value=9450.0, step=100.0, 
+    amount = st.number_input("Amount ($)", min_value=0.0, value=5000.0, step=100.0, 
                             help="Transaction amount in dollars")
     payment_currency = st.selectbox("Payment Currency", 
                                     ["US Dollar", "Euro", "UK Pound", "Yen", "Yuan", "Bitcoin", 
                                      "Australian Dollar", "Brazil Real", "Canadian Dollar", 
                                      "Mexican Peso", "Ruble", "Rupee", "Saudi Riyal", 
                                      "Shekel", "Swiss Franc"],
-                                    index=2)
+                                    index=0)
     
 with col3:
     st.markdown("**Payment Method**")
     payment_format = st.selectbox("Payment Format", 
                                  ["ACH", "Wire", "Cheque", "Cash", "Bitcoin", "Credit Card", "Reinvestment"],
-                                 index=0)
+                                 index=1)
     receiving_currency = st.selectbox("Receiving Currency",
                                      ["US Dollar", "Euro", "UK Pound", "Yen", "Yuan", "Bitcoin", 
                                       "Australian Dollar", "Brazil Real", "Canadian Dollar", 
                                       "Mexican Peso", "Ruble", "Rupee", "Saudi Riyal", 
                                       "Shekel", "Swiss Franc"],
-                                     index=2)
-
-st.markdown("---")
+                                     index=0)
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("**Sender Information**")
-    sender_bank = st.number_input("Sender Bank ID", min_value=0, value=800072000, step=1,
+    sender_bank = st.number_input("Sender Bank ID", min_value=0, value=12345, step=1,
                                  help="Bank ID of the sender")
     sender_account = st.text_input("Sender Account", value="ACC-123456",
                                    help="Sender account number (for reference only)")
 
 with col2:
     st.markdown("**Receiver Information**")
-    receiver_bank = st.number_input("Receiver Bank ID", min_value=0, value=100428660, step=1,
+    receiver_bank = st.number_input("Receiver Bank ID", min_value=0, value=67890, step=1,
                                     help="Bank ID of the receiver")
     receiver_account = st.text_input("Receiver Account", value="ACC-789012",
                                      help="Receiver account number (for reference only)")
 
 # Score Transaction Button
-if st.button("Score Transaction", use_container_width=True):
+if st.button(" Score Transaction", type="primary", use_container_width=True):
     st.markdown("---")
     st.markdown("###  Risk Assessment Results")
-    
-
     
     # Extract temporal features from datetime
     hour = transaction_time.hour
@@ -140,7 +121,6 @@ if st.button("Score Transaction", use_container_width=True):
     uk_pound_structuring = is_uk_pound * in_structuring_range
     
     # Statistical features (simplified calculations)
-    # Z-score: how many standard deviations from mean transaction amount
     mean_amount = 5000  # Average transaction amount
     std_amount = 3000   # Standard deviation
     amount_zscore = (amount - mean_amount) / std_amount
@@ -159,7 +139,7 @@ if st.button("Score Transaction", use_container_width=True):
         'To Bank': receiver_bank,
         'From Bank': sender_bank,
         'Amount Received': amount,
-        'Amount Paid': amount,  # Assuming same amount
+        'Amount Paid': amount,
         'hour': hour,
         'day_of_week': day_of_week,
         'is_weekend': is_weekend,
@@ -178,7 +158,7 @@ if st.button("Score Transaction", use_container_width=True):
         'risk_score_v2': risk_score_v2
     }
     
-    # Create DataFrame with features in the exact order from training
+    # Create features dataframe
     input_data = pd.DataFrame([input_dict], columns=feature_names)
     
     # Scale features
@@ -189,7 +169,7 @@ if st.button("Score Transaction", use_container_width=True):
     threshold = config['optimal_threshold']
     prediction = 1 if risk_probability >= threshold else 0
     
-    # Save to prediction history
+    # Save to prediction history (silently)
     prediction_record = {
         'Timestamp': f"{transaction_date} {transaction_time}",
         'Sender Bank': sender_bank,
@@ -201,29 +181,8 @@ if st.button("Score Transaction", use_container_width=True):
         'Status': 'HIGH RISK' if prediction == 1 else 'LOW RISK'
     }
     st.session_state.prediction_history.append(prediction_record)
-    
-    # Auto-save to Excel file
-    import os
-    excel_file = 'prediction_history.xlsx'
-    history_df_save = pd.DataFrame(st.session_state.prediction_history)
-    
-    try:
-        # Check if file exists and append, otherwise create new
-        if os.path.exists(excel_file):
-            # Read existing data
-            existing_df = pd.read_excel(excel_file)
-            # Append new record
-            updated_df = pd.concat([existing_df, pd.DataFrame([prediction_record])], ignore_index=True)
-            updated_df.to_excel(excel_file, index=False)
-        else:
-            # Create new file
-            history_df_save.to_excel(excel_file, index=False)
-        
-        st.success(f" Prediction automatically saved to {excel_file}")
-    except Exception as e:
-        st.warning(f"Could not auto-save to Excel: {e}")
-    
-    # Display Results
+ 
+    # Display metrics
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -250,161 +209,56 @@ if st.button("Score Transaction", use_container_width=True):
     
     st.markdown("---")
     
-    # Show automatically detected risk features
-    st.markdown("###  Detected Risk Features")
-    st.caption("These features were automatically extracted from your transaction:")
-    
-    risk_features = []
-    if is_ach:
-        risk_features.append("ACH Payment (49.7x baseline risk)")
-    if is_weekend:
-        risk_features.append("Weekend Transaction (3.0x baseline risk)")
-    if in_structuring_range:
-        risk_features.append(" Structuring Range 9K-$10K (8.3x baseline risk)")
-    if is_bank_1004:
-        risk_features.append(" High-Risk Bank 1004 (95.2% laundering rate)")
-    if is_uk_pound:
-        risk_features.append(" UK Pound Currency")
-    if ach_weekend:
-        risk_features.append(" ACH + Weekend Combined (21.6x baseline risk)")
-    if uk_pound_structuring:
-        risk_features.append(" UK Pound + Structuring (8.3x baseline risk)")
-    if is_night:
-        risk_features.append(" Night Transaction (10PM-6AM)")
-    
-    if risk_features:
-        for feature in risk_features:
-            st.warning(feature)
-    else:
-        st.success(" No high-risk features detected")
-    
-    st.markdown("---")
-    
     # Detailed Assessment
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("### Risk Analysis")
+        st.markdown("### Risk Assessment")
         
         if prediction == 1:
             st.error(f"""
-            **ALERT: Potential Money Laundering**
-            
-            - Risk Score: {risk_probability*100:.2f}%
-            - Exceeds threshold: {threshold*100:.0f}%
-            - Confidence: {(risk_probability/threshold)*100:.1f}% above threshold
-            
-            **Recommended Action:**
-            - Immediate investigation required
-            - Review transaction history
-            - Check for related patterns
-            - Consider SAR filing if confirmed
-            """)
+**HIGH RISK ALERT**
+
+Risk Score: **{risk_probability*100:.2f}%** (Above 10% threshold)
+
+**Recommended Actions:**
+• Flag for immediate investigation
+• Review customer transaction history
+• Consider SAR filing if patterns confirmed
+""")
         else:
             st.success(f"""
-            **NORMAL: Low Risk Transaction**
-            
-            - Risk Score: {risk_probability*100:.2f}%
-            - Below threshold: {threshold*100:.0f}%
-            - Safety margin: {((threshold-risk_probability)/threshold)*100:.1f}%
-            
-            **Recommended Action:**
-            - No immediate action required
-            - Continue routine monitoring
-            - Transaction appears legitimate
-            """)
+** LOW RISK TRANSACTION**
+
+Risk Score: **{risk_probability*100:.2f}%** (Below 10% threshold)
+
+**Recommended Actions:**
+• No immediate action required
+• Continue routine monitoring
+""")
     
     with col2:
-        st.markdown("### Risk Factors Identified")
+        st.markdown("### Key Indicators")
         
-        risk_factors = []
-        
-        if is_ach:
-            risk_factors.append(" ACH Payment (49x baseline risk)")
-        if is_weekend:
-            risk_factors.append(" Weekend Transaction (3x baseline risk)")
-        if ach_weekend:
-            risk_factors.append(" ACH + Weekend (21.6x combined risk)")
-        if in_structuring_range:
-            risk_factors.append(" Structuring Range $9K-$10K")
-        if is_uk_pound and in_structuring_range:
-            risk_factors.append(" UK Pound Structuring (8.3x risk)")
-        if is_bank_1004:
-            risk_factors.append(" Bank 1004 Pattern (High Risk)")
-        if is_just_below_threshold:
-            risk_factors.append(" Just Below $10K CTR Threshold")
-        
-        # Protective factors
-        if is_bank_800:
-            risk_factors.append(" Bank 800 (Trusted - Protective)")
-        if is_night:
-            risk_factors.append(" Night Transaction (0.53x - Protective)")
-        
-        if risk_factors:
-            for factor in risk_factors:
-                if "Protective" in factor:
-                    st.success(factor)
-                else:
+        if prediction == 1:
+            risk_factors = []
+            
+            if is_ach:
+                risk_factors.append("ACH payment format")
+            if is_weekend:
+                risk_factors.append("Weekend transaction")
+            if in_structuring_range:
+                risk_factors.append("Structuring pattern ($9K-$10K)")
+            if is_bank_1004:
+                risk_factors.append("High-risk institution")
+            if is_uk_pound and in_structuring_range:
+                risk_factors.append("Currency risk pattern")
+            
+            if risk_factors:
+                for factor in risk_factors:
                     st.warning(factor)
+            else:
+                st.info("Multiple minor risk signals detected")
         else:
-            st.info("No significant risk factors identified")
-
-st.markdown("---")
-
-# Prediction History Table
-st.markdown("### Prediction History")
-
-if len(st.session_state.prediction_history) > 0:
-    # Convert to DataFrame
-    history_df = pd.DataFrame(st.session_state.prediction_history)
-    
-    # Display summary metrics
-    col1, col2, col3, col4 = st.columns(4)
-    
-    total_predictions = len(history_df)
-    high_risk_count = len(history_df[history_df['Status'].str.contains('HIGH RISK')])
-    low_risk_count = total_predictions - high_risk_count
-    high_risk_pct = (high_risk_count / total_predictions * 100) if total_predictions > 0 else 0
-    
-    with col1:
-        st.metric("Total Scored", total_predictions)
-    with col2:
-        st.metric("High Risk", high_risk_count, delta=f"{high_risk_pct:.1f}%")
-    with col3:
-        st.metric("Low Risk", low_risk_count)
-    with col4:
-        # Clear history button
-        if st.button("Clear History"):
-            st.session_state.prediction_history = []
-            st.rerun()
-    
-    st.markdown("---")
-    
-    # Display table with most recent first
-    st.dataframe(
-        history_df.iloc[::-1],  # Reverse to show most recent first
-        use_container_width=True,
-        height=400,
-        column_config={
-            "Timestamp": st.column_config.TextColumn("Timestamp", width="medium"),
-            "Sender Bank": st.column_config.NumberColumn("Sender Bank", format="%d"),
-            "Receiver Bank": st.column_config.NumberColumn("Receiver Bank", format="%d"),
-            "Amount": st.column_config.TextColumn("Amount", width="small"),
-            "Currency": st.column_config.TextColumn("Currency", width="small"),
-            "Payment Format": st.column_config.TextColumn("Payment Format", width="small"),
-            "Risk Score": st.column_config.TextColumn("Risk Score", width="small"),
-            "Status": st.column_config.TextColumn("Status", width="medium")
-        },
-        hide_index=True
-    )
-    
-    # Download option
-    csv = history_df.to_csv(index=False)
-    st.download_button(
-        label="Download History as CSV",
-        data=csv,
-        file_name=f"prediction_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-        mime="text/csv"
-    )
-else:
-    st.info("No predictions yet. Score a transaction above to start building your history.")
+            st.success("Transaction cleared")
+            st.info("No suspicious patterns detected")
