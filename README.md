@@ -2,7 +2,7 @@
 **Production-Ready AML Detection for Banking Compliance**
 
 ## Project Overview
-A machine learning-powered Anti-Money Laundering (AML) detection system with an interactive Streamlit dashboard. Built using IBM's Synthetic AML Dataset (31.9M transactions), this system achieves **73% precision** and ***ROC-AUC 97.8%**, making it production-ready for banking compliance teams.
+A machine learning-powered Anti-Money Laundering (AML) detection system with an interactive Streamlit dashboard. Built using IBM's Synthetic AML Dataset (31.9M transactions), this system achieves **73% precision** and **ROC-AUC 97.8%**, making it production-ready for banking compliance teams.
 
 ##  Live Demo
  **[Visit Live Dashboard](https://cua-mda-aml-prediction.streamlit.app/)**
@@ -44,7 +44,7 @@ A machine learning-powered Anti-Money Laundering (AML) detection system with an 
 - **Dashboard**: Streamlit
 - **Data Processing**: Pandas, NumPy
 - **Visualization**: Plotly
-- **Deployment**: [Your deployment platform]
+- **Deployment**: Aws is cooming soon
 
 ##  Dataset
 - **Source**: IBM Synthetic AML Dataset
