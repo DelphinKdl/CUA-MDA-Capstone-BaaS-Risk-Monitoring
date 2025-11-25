@@ -222,9 +222,9 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
 Risk Score: **{risk_probability*100:.2f}%** (Above 10% threshold)
 
 **Recommended Actions:**
-• Flag for immediate investigation
-• Review customer transaction history
-• Consider SAR filing if patterns confirmed
+- Flag for immediate investigation
+- Review customer transaction history
+- Consider SAR filing if patterns confirmed
 """)
         else:
             st.success(f"""
@@ -233,8 +233,8 @@ Risk Score: **{risk_probability*100:.2f}%** (Above 10% threshold)
 Risk Score: **{risk_probability*100:.2f}%** (Below 10% threshold)
 
 **Recommended Actions:**
-• No immediate action required
-• Continue routine monitoring
+- No immediate action required
+- Continue routine monitoring
 """)
     
     with col2:
