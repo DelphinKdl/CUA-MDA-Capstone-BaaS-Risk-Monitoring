@@ -100,13 +100,12 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
     is_weekend = 1 if day_of_week >= 5 else 0
     is_night = 1 if hour >= 22 or hour < 6 else 0
     
-    # Payment format features
+    # features
     is_ach = 1 if payment_format == "ACH" else 0
-    
-    # Currency features
     is_usd = 1 if payment_currency == "US Dollar" else 0
     is_euro = 1 if payment_currency == "Euro" else 0
     is_uk_pound = 1 if payment_currency == "UK Pound" else 0
+<<<<<<< HEAD
     
     # Bank-specific features (based on account prefix)
     sender_account_str = str(sender_account)
@@ -140,6 +139,16 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
     # Statistical features 
     mean_amount = 5392240 
     std_amount = 1298679000 
+=======
+    is_bank_800 = 1 if receiver_bank == 800 or sender_bank == 800 else 0
+    is_bank_1004 = 1 if receiver_bank == 1004 or sender_bank == 1004 else 0
+    in_structuring_range = 1 if 9000 <= amount <= 10000 else 0
+    is_just_below_threshold = 1 if 9500 <= amount < 10000 else 0
+    ach_weekend = is_ach * is_weekend
+    uk_pound_structuring = is_uk_pound * in_structuring_range
+    mean_amount = 5000  # Average transaction amount
+    std_amount = 3000   # Standard deviation
+>>>>>>> kdl-branch
     amount_zscore = (amount - mean_amount) / std_amount
     
     # Risk score v2: composite risk indicator
@@ -175,18 +184,18 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
         'risk_score_v2': risk_score_v2
     }
     
-    #  features 
+    # features dataframe
     input_data = pd.DataFrame([input_dict], columns=feature_names)
     
     # Scale features
     input_scaled = scaler.transform(input_data)
     
-    # Get prediction
+    # prediction
     risk_probability = model.predict_proba(input_scaled)[0][1]
     threshold = config['optimal_threshold']
     prediction = 1 if risk_probability >= threshold else 0
     
-    #
+    # Save prediction history
     prediction_record = {
         'Timestamp': f"{transaction_date} {transaction_time}",
         'Sender Bank': sender_bank,
@@ -265,7 +274,7 @@ Risk Score: **{risk_probability*100:.2f}%** (Below 10% threshold)
             if is_weekend:
                 risk_factors.append("Weekend transaction")
             if in_structuring_range:
-                risk_factors.append("Structuring pattern")
+                risk_factors.append("Structuring pattern ($9K-$10K)")
             if is_bank_1004:
                 risk_factors.append("High-risk institution")
             if is_uk_pound and in_structuring_range:
