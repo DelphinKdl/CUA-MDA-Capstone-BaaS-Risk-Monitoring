@@ -173,14 +173,14 @@ with col1:
     st.info("""
     **The Trade-off**
 
-    We face a critical trade-off between two thresholds: 0.9 maximizes our F1 score and precision (our original goal), while 0.1 minimizes predicted financial losses based on our cost-based analysis that assigns amount of $5k per FP and $80 per FN. If we prioritize immediate business impact we should use the 0.1 threshold, but if we want to demonstrate our project's technical goals, the 0.9 threshold is more appropriate.
+    We face a critical trade-off between two thresholds: 0.9 maximizes our F1 score and precision (our original goal), while 0.1 minimizes predicted financial losses based on our cost-based analysis that assigns amount of 5X per FN and $80 per FP. If we prioritize immediate business impact we should use the 0.1 threshold, but if we want to demonstrate our project's technical goals, the 0.9 threshold is more appropriate.
     """)
 
 with col2:
     st.success("""
     **Future Application**
 
-    Moving forward, as a fintech company, we could recommend implementing dynamic threshold adjustment based on real-time business conditions using higher thresholds during low-risk periods and lower thresholds during high-risk seasons or for high-value transactions.
+    Moving forward, In a fintech company, we are recommend implementing dynamic threshold adjustment based on real-time business conditions using higher thresholds(0.9) during low-risk periods and lower thresholds(0.1) during high-risk seasons or for high-value transactions.
     """)
 # Footer
 st.markdown("---")
