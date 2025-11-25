@@ -142,24 +142,46 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.success("""
-    **LightGBM + Probability Calibration**
+      **LightGBM + Probability Calibration:**
+
     - Decision Threshold: 0.10 (optimized for precision)
     - Training: Full 25.5M transactions
-    **Key Advantage:** 
-Calibrated probabilities, when model says 10% risk, it means 10%
+
+    Key Advantage: 
+    Calibrated probabilities, when model says 10% risk, it means 10%
     
-  
     """)
+
 
 with col2:
     st.info("""
       **Business Impact:**
+
     - Reduces analyst workload by 62% vs alternative models
     - 27x reduction in false positives
     - 73% confidence in every alert
     - Manageable 860 alerts per day
     """)
 
+# Model Approach Comparison
+st.markdown("---")
+st.markdown("### Threshold Recommendation")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.info("""
+    **The Trade-off**
+
+    We face a critical trade-off between two thresholds: 0.9 maximizes our F1 score and precision (our original goal), while 0.1 minimizes predicted financial losses based on our cost-based analysis that assigns amount of $5k per FP and $80 per FN. If we prioritize immediate business impact we should use the 0.1 threshold, but if we want to demonstrate our project's technical goals, the 0.9 threshold is more appropriate.
+    """)
+
+with col2:
+    st.success("""
+    **Future Application**
+
+    Moving forward, as a fintech company, we could recommend implementing dynamic threshold adjustment based on real-time business conditions using higher thresholds during low-risk periods and lower thresholds during high-risk seasons or for high-value transactions.
+    """)
 # Footer
 st.markdown("---")
 st.markdown("""
