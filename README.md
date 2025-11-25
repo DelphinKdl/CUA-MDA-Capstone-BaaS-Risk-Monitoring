@@ -101,7 +101,7 @@ The dashboard will open in your browser at `http://localhost:8501`
 - Performance metrics
 - Model configuration details
 
-### 3. Investigator Workbench ⭐
+### 3. Investigator Workbench
 - **Star Feature**: Real-time transaction risk scoring
 - User-friendly input form
 - Automatic feature engineering
