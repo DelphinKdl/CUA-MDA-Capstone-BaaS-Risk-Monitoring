@@ -123,7 +123,7 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
                          str(sender_bank).startswith('1004') or 
                          str(receiver_bank).startswith('1004')) else 0
     
-    # Structuring detection - CORRECTED
+    # Structuring detection
     # is_just_below_threshold: 9K-10K for major currencies
     is_just_below_threshold = 0
     if payment_currency in ['US Dollar', 'Euro', 'UK Pound', 'Canadian Dollar', 'Australian Dollar']:
@@ -137,9 +137,9 @@ if st.button(" Score Transaction", type="primary", use_container_width=True):
     ach_weekend = is_ach * is_weekend
     uk_pound_structuring = is_uk_pound * is_just_below_threshold
     
-    # Statistical features - CORRECTED with actual dataset statistics
-    mean_amount = 5392240  # Actual mean from dataset
-    std_amount = 1298679000  # Actual std from dataset
+    # Statistical features 
+    mean_amount = 5392240 
+    std_amount = 1298679000 
     amount_zscore = (amount - mean_amount) / std_amount
     
     # Risk score v2: composite risk indicator
